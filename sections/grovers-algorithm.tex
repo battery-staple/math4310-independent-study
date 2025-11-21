@@ -1,0 +1,52 @@
+\begin{section}{Grover's Algorithm}
+  With the quantum background out of the way, Grover's algorithm is actually relatively simple.
+  It solves a very general problem called database search.
+  
+  \begin{subsection}{Database Search}
+    \begin{definition}[Database Search]
+      Given a set $S$, an element $s \in S$, and an efficiently computable function $f: S \to \{0, 1\}$ for which
+      $$f(x) =
+      \begin{cases*}
+        1 \text{ if }x = s\\
+        0 \text{ if }x \neq s\\
+      \end{cases*}$$
+      the database search problem asks for an efficient algorithm for finding $s$.
+    \end{definition}
+    
+    For instance, one could imagine $S$ to be an unsorted database of some records of interest.
+    If $s$ is a particular record in the database, we could use a database search algorithm to find the record.
+    
+    Alternatively, the setting could be more abstract.
+    Suppose we have any injective function $g: X -> Y$ with finite codomain, as well as some element $y \in Y$ for which we are trying to find the preimage.
+    This is essentially an instance of database search for which $S = Y$ and $f(x) = \begin{cases*}
+                                                                                       1 \text{ if }g(x) = y \\ 0 \text{ otherwise}
+    \end{cases*}$.
+    
+    Many hard problems in computer science (for instance, the discrete log problem~\ref{def:discretelog}) can be reduced to finding the inverses of functions.
+    A very fast algorithm for database search could therefore be applied to solve a very large number of problems.
+    
+    This problem is therefore very general and, without additional information, potentially very difficult.
+    Notice that we aren't given any information about the set $S$ nor the element $s$.
+    There is essentially no structure provided by the problem, so we don't have much to go off of in designing an algorithm.
+    Because of this, it should be relatively clear that there is no faster classical algorithm for this problem than a simple brute force search:
+    
+    \begin{algorithm}[H]
+      \caption{Brute Force Database Search}
+      \label{alg:bruteforcedbsearch}
+      \KwIn{Set $S$, function $f: S \to \{0, 1\}$}
+      \KwResult{$s \in S$ such that $f(s) = 1$}
+      \ForEach{s \in S}{
+        \eIf{$f(s) = 1$}{
+          \KwRet $s$
+        }
+      }
+    \end{algorithm}
+    
+    
+    This algorithm in the worst case takes up to $n$ iterations before finding $s$.
+    If $s$ happens to be the last element, it will have to iterate through the entire set before finding it.
+    Without any additional information, this is the best we can do on a classical computer.
+    
+    
+  \end{subsection}
+\end{section}

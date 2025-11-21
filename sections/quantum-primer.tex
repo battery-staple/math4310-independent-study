@@ -1,0 +1,175 @@
+\begin{section}{Quantum Physics Primer}
+  \begin{subsection}{Quantum States}
+    \label{subsec:quantum-states}
+    In classical physics, there are many quantities that together define the state of a system.
+    For instance, a particle may have a position, a velocity, a mass, a charge, and more.
+    It takes many of these quantities together to form a complete description of the system and predict how it will evolve over time.
+    
+    In quantum physics, the picture is much simpler: there is only a single ``quantum state'' that describes everything knowable about a system at a given time.
+    
+    \begin{definition}[Quantum state]
+      A quantum state $\psiket$ is a unit vector in some complex Hilbert space $\H$
+      \footnote{Although this is in general a Hilbert space, in this report we will generally only consider finite-dimensional Hilbert spaces, so we can just treat it as a regular inner product space.}.
+      It is a complete mathematical representation of the system; every predictable facet of the system can be derived from this state.
+    \end{definition}
+    Any given quantum system has an associated Hilbert space in which its state vectors live, but different systems may be associated with different underlying Hilbert spaces.
+  
+  \end{subsection}
+  
+  \begin{subsection}{Observables}
+    \label{subsec:observables}
+    
+    Other quantities, like position and momentum, are no longer fundamental to the system and, in fact, no longer even have physical reality.
+    In quantum physics, these quantities are called ``observables''.
+    Before being measured, they do not exist.
+    
+    \begin{definition}[Observable]
+      An observable $O$ is a measurable quantity of a quantum system.
+    \end{definition}
+    For instance, the observables of a quantum particle might include its position, momentum, and charge.
+    Observables are a physical concept, not mathematical objects.
+    However, we will later see how they are formalized mathematically.
+    
+    More unsettlingly, even when a system's quantum state is known, it is not generally possible to predict the exact result of a given measurement.
+    For instance, consider a particle in free space; i.e., in the absence of any gravity, electromagnetic, or other fields.
+    It is not difficult to compute this particle's precise quantum state.
+    Nonetheless, if one measures the particle's position, it is possible for the particle to appear anywhere in the universe at all.
+    This is not a question of measurement error or incomplete information.
+    There is simply a randomness intrinsic to the measurement that physically cannot be reduced.
+    This is very surprising!
+    Our classical intuition of the world is that objects in a definite state have definite measurable values.
+    For instance, if one places a ball on a table, everyone can agree that the ball is, in fact, on the table.
+    If nobody moves it and no forces act on it, then we expect that the ball will still be on the table next week.
+    It is not the case that every time we blink, the ball magically appears in a different spot.
+    Yet this is what happens in quantum physics.
+    
+    Knowledge of the quantum state is not entirely useless, however.
+    Although it is impossible to say exactly where a particle is before it is measured, the state allows us to at least derive a probability distribution of where we expect the particle to appear.
+    One can imagine an experiment in which one does the following: first, they put a particle in a particular quantum state.
+    Then, they measure its position.
+    Although the result of each individual experiment is unpredictable, if it is repeated, the distribution of results will match the predicted distribution.
+    We will discuss exactly how to calculate this distribution later on.
+  \end{subsection}
+  
+  \begin{subsection}{Qubits}
+    \label{subsec:qubits-and-state-vectors}
+    For our purposes in quantum computing, our fundamental objects are called qubits.
+    These qubits can be implemented in a variety of ways; for instance, they may be a photon, an electron, or even the state of an entire superconducting circuit.
+    Regardless of their physical instantiation, however, a qubit's state always lives in a two-dimensional Hilbert space.
+    From the perspective of quantum computing, that means we can ignore their physical reality and use only their mathematical description.
+    
+    Typically, we operate in a standard basis containing two vectors, $\colvector{1,0}$ and $\colvector{0,1}$.
+    In physics notation, these are $\ket{0}$ and $\ket{1}$, respectively.
+    Of course, unlike regular bits, qubits are not restricted to only these two states.
+    Instead, they can be in any state with unit norm.
+    If we write the state as $\ket{\psi}$, a general qubit state therefore looks like:
+    $$
+    \ket{\psi} = \alpha\ket{0} + \beta\ket{1}
+    $$
+    for some $\alpha, \beta \in \C$ with $|\alpha|^2 = |\beta|^2$.
+    Any state other than $\ket{0}$ or $\ket{1}$ is called a superposition.
+    Sometimes these qubits are described as being ``in both the $\ket{0}$ and $\ket{1}$ state at the same time''.
+    Mathematically, however, these superposition states are just vectors like any other.
+  \end{subsection}
+  
+  \begin{subsection}{Measurements and Hermitian Operators}
+    \label{subsec:measurements}
+    Now that we have discussed a bit of the mathematical basis for quantum states, we can return to the question of measurement.
+    One important fact, which holds for reasons outside the scope of this report, is that every observable can be identified with a particular Hermitian operator.
+    Given an observable $O$ (i.e. position, momentum, energy, etc.), we use the notation $\Ohat$ to denote the unique Hermitian operator associated with it.
+    
+    \begin{definition}
+      A linear operator $A$ is called Hermitian if it is self-adjoint; i.e. $A = A^*$.
+    \end{definition}
+    As mentioned above, most states do not have a definite value of any particular observable.
+    In general, the result of a measurement is unpredictable: multiple measurements of the same state will give different, random, results.
+    However, there are certain special states that \emph{do} have definite values of an observable.
+    Specifically, for any observable $O$ (again, think position, momentum, or energy), there exist certain states for which any measurement of $O$ will always give the same result.
+    \begin{definition}
+      A state $\psiket$ is said to have a ``definite value'' of an observable $O$ if a measurement of $O$ on $\psiket$ always gives the same value.
+    \end{definition}
+    For example, a single photon always has energy $\hbar\omega$, where $\omega$ is the frequency of the light and $\hbar$ is a constant.
+    If one were to measure the energy of a single photon, they would always get the same result.
+    We would therefore say that a photon has a definite value of energy, equal to $\hbar\omega$.
+    
+    It turns out that states like this—with definite values of particular observables—are always eigenstates of the operator associated with the observable.
+    Formally:
+    \begin{fact}
+      If $\ket{\psi} \in \H$ is the state of some quantum system in its Hilbert space $\H$, $O$ is some observable, and $\hat{O} \in \L(\H)$ is the Hermitian operator associated with $O$, then:
+      $$\Ohat \psiket = \lambda\psiket \text{ for some }\lambda \in \R \iff \psiket\text{ has a definite value of }O$$
+      Furthermore, if this happens, the eigenvalue $\lambda$ is the result of the measurement.
+    \end{fact}
+    
+    Continuing with our photon example above, we know that a photon in state $\psiket$ has energy $\hbar \omega$.
+    So if we let $\hat{E}$ be the ``energy operator'' (the operator associated with the observable energy), we must have:
+    $$\hat{E}\psiket = \hbar\omega\psiket$$
+    
+    With this fact, along with the fact that all observable operators are Hermitian, we can make some observations.
+    For one, we know that the eigenvalues of Hermitian operators are always real.
+    This corresponds to the fact that all physical measurements that can be made are always real-valued.
+    This is certainly what we expect.
+    It would be a confusing world if particles could have a momentum of $2 + i$, for instance!
+    
+    At this point, one may wonder: what happens if we make a measurement of $O$ on a state $\psiket$ that is \emph{not} an eigenvalue?
+    We know that these non-eigenvalue states do not have a definite value of $O$.
+    This means that the result of the measurement is unpredictable, and can take on a number of possible values.
+    But which values, exactly?
+    
+    The answer is a bit odd.
+    Consider an arbitrary state $\psiket$.
+    We know that if $\psiket$ is an eigenvector of $\Ohat$, then the result of the measurement will be the corresponding eigenvalue of $\Ohat$.
+    Interestingly, something similar is true even if $\psiket$ is not an eigenvector:
+    \begin{fact}
+      For any state $\psiket$ and observable $O$, a measurement of $O$ on $\psiket$ will always result in some eigenvalue $\lambda$.
+      It is not possible to measure any value that is not an eigenvalue.
+    \end{fact}
+    
+    This leads to some unintuitive conclusions.
+    For instance, in classical physics, we think of energy as a continuum.
+    There is no ``smallest amount'' of energy a particle can have, nor is there a maximum.
+    Any amount of energy in the range $[0, \inf)$ is theoretically possible.
+    However, in many cases, the quantum energy operator $\hat{E}$ has only countably many eigenvalues.
+    When this happens, this means there are certain energy values that are simply impossible to achieve.
+    It may be possible to have an energy of $0$, $1$, or $2$ but not $1.5$!
+    This is very much not true in classical physics.
+    
+    With this fact stated, a natural next question arises: when we measure a non-eigenvector state, which eigenvalue results are possible?
+    We know there will be some randomness in the value measured.
+    But how can we describe the distribution of possible measurements?
+    
+    It turns out that the answer is very simple.
+    Consider an arbitrary operator $O$, and recall that $\Ohat$ must be Hermitian.
+    Since one can always find eigenvectors of a Hermitian operator that form an orthonormal basis, this implies that any arbitrary state $\psiket$ can always be written in the form:
+    $$\psiket = \sum_{i=1}^n{\alpha_i\ket{\psi_i}}$$
+    where $\{\ket{\psi_i}\}_{i=1}^n$ are the eigenvectors of $\Ohat$.
+    \begin{fact}
+      Given a quantum state $\psiket$ written in the above form, let $\lambda_i$ be the eigenvalue corresponding to $\ket{\psi_i}$.
+      Then a measurement of $O$ on $\psiket$ will give $\lambda_i$ with probability $|\alpha_i|^2$, where $\alpha_i$ is the coefficient of $\ket{\psi_i}$ in the linear combination forming $\psiket$.
+    \end{fact}
+    Because we know that $\{\ket{\psi_i}\}_{i=1}^n$ form an orthonormal set, we can conclude the following:
+    \begin{corollary}
+      Suppose $\psiket$, $\ket{\psi_i}$, and $\lambda_i$ are defined as above.
+      Then a measurement of $O$ on $\psiket$ will give $\lambda_i$ with probability $|\braket{\psi_i|\psi}|^2$, where $\braket{\psi_i|\psi}$ is physics notation for the inner product $\iprod{\ket{\psi}}{\ket{\psi_i}}$
+    \end{corollary}
+  \end{subsection}
+  
+  \begin{subsection}{Multi-Qubit Systems}
+    \label{subsec:multi-qubit-systems}
+    In any useful quantum algorithm, we will want to have more than one qubit.
+    Conveniently, a collection of qubits can be thought of as a new composite quantum system with its own quantum state space.
+    In particular, given a set $\{\H_1, \H_2, \dots, \H_n\}$ of Hilbert spaces each corresponding to a qubit's state, the whole system of all $n$ qubits can be described by a state vector in $\H_1 \otimes \H_2 \otimes \dots \otimes \H_n$ (here $\otimes$ is the tensor product).
+    
+    A system of multiple qubits can be in either an ``entangled'' or an ``unentangled'' state.
+    \begin{definition}[Unentangled state]
+      A quantum state $\psiket \in \H_1 \otimes \H_2 \otimes \dots \otimes \H_n$ is said to be unentangled if
+      $$\psiket = \ket{\psi_1} \otimes \ket{\psi_2} \otimes \dots \ket{\psi_n}$$
+      for some states $\ket{\psi_i} \in \H_i$
+    \end{definition}
+    In an unentangled state, one can reasonably say that the $i$th qubit is in state $\ket{\psi_i}$ for all $i$.
+    However, the state of the system can be more complex.
+    Consider a system of two qubits with the following state:
+    $$\frac{1}{\sqrt{2}}(\ket{0} \otimes \ket{1}) + \frac{1}{\sqrt{2}}(\ket{1} \otimes \ket{0})$$
+    (Notice the factors of $\frac{1}{\sqrt{2}}$, since quantum states must be unit vectors).
+  
+  \end{subsection}
+\end{section}
