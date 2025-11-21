@@ -7,9 +7,11 @@
 \usepackage{xcolor,stmaryrd,bussproofs,mathpartir}
 \usepackage{tikz,pgfmath,tikz-cd}
 \usepackage[makeroom]{cancel}
-\usepackage{algorithm}
-\usepackage{algpseudocodex}
+\usepackage{algorithm2e}
 \usepackage{semantic}
+\usepackage{braket}
+\usepackage{mathtools}
+\usepackage{algpseudocode}
 \usepgflibrary{shapes}
 \usetikzlibrary{arrows,automata,backgrounds}
 
@@ -32,10 +34,14 @@
 \newcommand\Z{\mathbb{Z}}
 \newcommand\Q{\mathbb{Q}}
 \newcommand\R{\mathbb{R}}
+\newcommand\C{\mathbb{C}}
 \newcommand\A{\mathcal{A}}
 \newcommand\B{\mathcal{B}}
-\newcommand\C{\mathcal{C}}
 \newcommand\T{\mathcal{T}}
+\renewcommand\H{\mathcal{H}}
+\renewcommand\L{\mathcal{L}}
+\renewcommand\Ohat{\hat{O}}
+\renewcommand\psiket{\ket{\psi}}
 \newcommand\abs[1]{\left|#1\right|}
 \newcommand\floor[1]{\lfloor #1 \rfloor}
 \newcommand\ceil[1]{\lceil#1\rceil}
@@ -49,6 +55,15 @@
 \newcommand\case[1]{\textbf{Case }#1\textbf{.}}
 \newcommand\limit[2]{\lim\limits_{#1 \to #2}}
 \newcommand\maybeeq{\stackrel{?}{=}}
+\newcommand{\iprod}[2]{\langle #1, #2 \rangle}
+\ExplSyntaxOn
+\NewDocumentCommand{\colvector}{m}
+{
+  \begin{bmatrix}
+    \clist_use:nn { #1 } { \\ }
+  \end{bmatrix}
+}
+\ExplSyntaxOff
 
 %environment definitions
 
@@ -58,20 +73,22 @@
 \newtheorem{definition}[theorem]{Definition}
 \newtheorem{claim}[theorem]{Claim}
 \newtheorem{fact}[theorem]{Fact}
+\newtheorem{corollary}[theorem]{Corollary}
 
 \DeclareMathOperator{\sgn}{sgn}
 \DeclareMathOperator{\id}{id}
 
 \title{Impossibly Fast Quantum Database Search \\
 \vspace{0.5cm}
-\large{MATH 4330 Final Paper}}
+\large{MATH 4310 Final Paper}}
 \author{Rohen Giralt (rmg296@cornell.edu)}
 
 \begin{document}
   \maketitle
   
-  \input{sections/motivation}
-  \input{sections/background}
+  \input{sections/introduction}
+  \input{sections/quantum-primer}
+  \input{sections/grovers-algorithm}
   
   \nocite{*}
   \bibliographystyle{plain}

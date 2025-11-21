@@ -1,0 +1,39 @@
+\section{Introduction}\label{sec:introduction}
+  
+  In 1997, Peter Shor developed what have come to be known as “Shor’s Algorithms”, algorithms for solving the prime factorization and discrete log problems.
+  \begin{definition}[Discrete log problem]
+    \label{def:discretelog}
+    Given an abelian group $G$ with a generator $g$, define a function $f(k): \Z \to G$ given by $f(k) \coloneqq g^k$,
+    the discrete log problem asks for an efficient algorithm that, given $f(k)$, can find $k$.
+  \end{definition}
+  \begin{definition}[Prime factorization problem]
+    Given a positive integer $n$, the prime factorization problem asks for an efficient algorithm to find all prime numbers $p$ such that $p | n$.
+  \end{definition}
+  While seemingly innocuous, a vast amount of cryptography relies on the assumption that these problems are hard to compute; i.e., that no efficient algorithm can solve them.
+  When Shor's paper contradicted this assumption, it set off a frenzy to repair the very foundations of the cryptography we all rely on.
+  
+  Since then, most discussion of quantum computers has been mired in fear.
+  Is any of our data safe?
+  What if someone is recording our communications to decrypt at a later date, once quantum computers become feasible?
+  Is it even possible to have secure cryptography in the face of quantum computers?
+  These are important questions, and their answers are unknown (though there do exist good candidates for post-quantum cryptography).
+  But what about their positive applications?
+  Are quantum computers nothing more than a specter haunting cryptography?
+  Or can they actually be used for something positive?
+%  Yet cryptographers have managed to develop new encryption schemes not relying on discrete log.
+%  And fueled by the specter of the quantum computer, companies and governments have slowly but surely put them into practice.
+%  Even so, discourse around quantum computers remains altogether negative.
+%  Quantum computers are dangerous because they can break cryptography.
+%  But can they actually do anything positive?
+  
+  Grover's algorithm provides a hint to an answer.
+  It's a very simple algorithm for a very simple problem: finding a single element in an unsorted set.
+  It's a problem that is not even interesting on classical computers, because the optimal solution is so obvious.
+  (We will see that later when we formalize the problem.)
+  And yet Grover's algorithm manages to be somehow even faster, returning a result in less time than it takes to \emph{even read the input}.
+  
+  To me, that is incredibly surprising and interesting, as it flies very much in the face of our classical intuition of what a computer can do.
+  Shor's algorithm is a more technical result without as much intuitive might: if you told the average person that you had an efficient algorithm for factoring numbers, most would be unimpressed.
+  Without having studied the problem, efficient integer factorization doesn't seem like it should be impossibly hard.
+  But an algorithm that can find an element in a set without even seeing the whole set?
+  I think most would find that truly surprising.
