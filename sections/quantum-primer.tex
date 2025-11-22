@@ -60,6 +60,7 @@
     
     Typically, we operate in a standard basis containing two vectors, $\colvector{1,0}$ and $\colvector{0,1}$.
     In physics notation, these are $\ket{0}$ and $\ket{1}$, respectively.
+    (To avoid confusion, note that $\ket{0}$ does \emph{not} represent the zero-vector!)
     Of course, unlike regular bits, qubits are not restricted to only these two states.
     Instead, they can be in any state with unit norm.
     If we write the state as $\ket{\psi}$, a general qubit state therefore looks like:
@@ -178,34 +179,32 @@
     Conveniently, a collection of qubits can be thought of as a new composite quantum system with its own quantum state space.
     In particular, given a set $\{\H_1, \H_2, \dots, \H_n\}$ of Hilbert spaces each corresponding to a qubit's state, the whole system of all $n$ qubits can be described by a state vector in $\H_1 \otimes \H_2 \otimes \dots \otimes \H_n$ (here $\otimes$ is the tensor product).
     
-    A system of multiple qubits can be in either an ``entangled'' or an ``unentangled'' state.
-    \begin{definition}[Unentangled state]
-      A quantum state $\psiket \in \H_1 \otimes \H_2 \otimes \dots \otimes \H_n$ is said to be unentangled if
-      $$\psiket = \ket{\psi_1} \otimes \ket{\psi_2} \otimes \dots \ket{\psi_n}$$
-      for some states $\ket{\psi_i} \in \H_i$
-    \end{definition}
-    In an unentangled state, one can reasonably say that the $i$th qubit is in state $\ket{\psi_i}$ for all $i$.
-    However, the state of the system can be more complex.
-    Consider a system of two qubits with the following state:
-    $$\frac{1}{\sqrt{2}}(\ket{0} \otimes \ket{1}) + \frac{1}{\sqrt{2}}(\ket{1} \otimes \ket{0})$$
-    (Notice the factors of $\frac{1}{\sqrt{2}}$, since quantum states must be unit vectors).
-    
-    This state is entangled, which means that it cannot be written as a single tensor product of states in $\H_i$s.
-    These states have some odd properties: for instance, if one measures just the first qubit, there is a 50\% chance that one gets the value $0$.
-    But if that happens, then any successive measurements of the second qubit will always return the value $1$ with probability 1, even though that priority was only 50\% prior to the other measurement.
-    Fortunately, we will not have to worry about such subtleties here.
+    We will typically denote the state of a system with $n$ qubits in one of two ways.
+    The eigenstates will be denoted as $\ket{\psi_1\psi_2\dots\psi_n}$, where each of $\psi_i \in \{0, 1\}$.
+    So for instance, the state with four qubits, each in the $\ket{0}$ state is denoted as $\ket{0000}$.
+%
+    The non-eigenstates will typically be denoted as a $2^n$-dimensional vector, where the first entry is the coefficient of the $\ket{0\dots0}$ state, the second entry is the coefficient of the $\ket{0\dots1}$ state, etc.
+    So for instance, the following state of two qubits:
+    \begin{align*}
+    \psiket &= \frac{1}{2}(\ket{0} \otimes \ket{0}) + \frac{1}{\sqrt{2}}(\ket{0} \otimes \ket{1}) + \frac{1}{2}(\ket{1} \otimes \ket{1})\\
+    &= \frac{1}{2}\ket{00} + \frac{1}{\sqrt{2}}\ket{01} + \frac{1}{2}\ket{11}
+    \end{align*}
+    would be denoted as:
+    $$\psiket = \left\langle \frac{1}{2}, 0, \frac{1}{\sqrt{2}}, \frac{1}{2} \right\rangle$$
   \end{subsection}
   
   \begin{subsection}{Quantum Gates}
     Finally, before we can see the algorithm, we must define quantum gates.
     
     Classical computers are built from different gates—AND, OR, NOT, etc.—which each operate on the $0$s and $1$s stored in the CPU's registers.
-    Quantum computers are conceptually no different, although they are a bit more complex.
+    Quantum computers are conceptually no different.
     
     \begin{definition}{Quantum gate}
-      A quantum gate is a unitary operator $U \in \L(\H)$ (not necessarily Hermitian nor related to a measurement!), where $\H$ is some
+      A quantum gate is a unitary operator $U \in \L(\H)$ (not necessarily Hermitian nor related to a measurement!), where $\H$ is the Hilbert space of a system of several qubits.
     \end{definition}
     
-    Intuitively, a quantum gate is applied to a system of
+    A quantum gate simply gets applied to the state of a system of qubits to transform it into a new state.
+    The requirement that it be unitary comes from the fact that quantum states always have unit norm.
+    It must be unitary so that all output states remain properly normalized.
   \end{subsection}
 \end{section}
