@@ -3,13 +3,13 @@
   That problem is called Database Search.
   \begin{subsection}{Database Search}
     \begin{definition}[Database Search]
-      Given a set $S$, an element $s \in S$, and an efficiently computable function $f: S \to \{0, 1\}$ for which
+      Suppose there exist a set $S$, an element $s \in S$, and an efficiently computable function $f: S \to \{0, 1\}$ for which
       $$f(x) =
       \begin{cases*}
         1 \text{ if }x = s\\
         0 \text{ if }x \neq s\\
       \end{cases*}$$
-      the database search problem asks for an efficient algorithm for finding $s$.
+      Then the database search problem asks for an efficient algorithm for finding $s$ given only $S$ and $f$.
     \end{definition}
     
     For instance, one could imagine $S$ to be an unsorted database of some records of interest.
@@ -26,15 +26,15 @@
     Many hard problems in computer science (for instance, the discrete log problem~\ref{def:discretelog}) can be reduced to finding the inverses of functions.
     A very fast algorithm for database search could therefore be applied to solve a very large number of problems.
     
-    This problem is therefore very general and, without additional information, potentially very difficult.
+    This problem is thus very general and, without additional information, seemingly very difficult.
     Notice that we aren't given any information about the set $S$ nor the element $s$.
     There is essentially no structure provided by the problem, so we don't have much to go off of in designing an algorithm.
-    Because of this, it should be relatively clear that there is no faster classical algorithm for this problem than a simple brute force search:
+    Because of this, it should be relatively clear that there is no faster classical algorithm for solving this problem than a simple brute force search:
     
     \begin{algorithm}[H]
       \caption{Brute Force Database Search}
       \label{alg:bruteforcedbsearch}
-      \KwIn{Set $S$, function $f: S \to \{0, 1\}$}
+      \KwIn{A set $S$, a function $f: S \to \{0, 1\}$}
       \KwResult{$s \in S$ such that $f(s) = 1$}
       \ForEach{s \in S}{
         \eIf{$f(s) = 1$}{
@@ -50,5 +50,136 @@
     Intuitively, this should make sense.
     Because we know nothing about $S$ or $f$ or $s$, we have no way of determining where $s$ is in the set, so we have to check every element.
     Yet shockingly, this is not true for quantum computers.
+  \end{subsection}
+  
+  \begin{subsection}{The Algorithm}
+    With the background out of the way, the algorithm itself is actually fairly simple.
+    It's only six lines and operates on $\ceil{\log(n)}$ qubits, where $n = |S|$ is the length of the input:
+    
+    \begin{algorithm}[H]
+      \caption{Grover's Algorithm}
+      \label{alg:groversalgo}
+      \KwIn{A set $S$, a function $f: S \to \{0, 1\}$}
+      \KwResult{$s \in S$ such that $f(s) = 1$ with constant probability}
+      Initialize the system state $\psiket$ to $\psiket = \frac{1}{\sqrt{n}}\underbrace{\langle 1, 1, \dots, 1 \rangle}_{n\text{ times}}$\;
+      \RepTimes{$\ceil{\sqrt{2n}}$}{
+        $\psiket \gets U_f \psiket$\;
+        $\psiket \gets (-I + 2P)\psiket$\;
+      }
+      \textbf{measure} each qubit in $\psiket$ to get a binary string $s$\;
+      \Return $s$\;
+    \end{algorithm}
+    
+    Of course, to understand it, we will need to understand the $U_f$ and $P$ operators.
+    
+    \begin{definition}[$U_f$ operator]
+      Given a function $f$, the operator $U_f \in \H$ is the unitary operator that maps the basis vectors $\ket{x}$ to $(-1)^{f(x)}\ket{x}$.
+      Its action on all other vectors is uniquely determined by linearity.
+    \end{definition}
+    Essentially, if $\ket{x}$ is a basis state—i.e., in a non-superposition state—storing the string $x$, then $x$ is an eigenvector of $U_f$.
+    If $f(x) = 1$, then it has eigenvalue $-1$ (i.e. $U_f$ ``flips'' it), and if $f(x) = 0$, then it has eigenvalue $1$ ($U_f$ ``leaves it alone'').
+    
+    Given the function $f$, we can construct the $U_f$ gate.
+    One can think of it as the encoding of $f$ that is usable by a quantum computer.
+    
+    \begin{definition}[$P$ operator]
+      The unitary operator $P \in \L(\H)$ is the operator associated with the following matrix in the standard basis:
+      $$\mathcal{M}(P) = \frac{1}{n}
+      \begin{bmatrix}
+        1      & \dots  & 1 \\
+        \vdots & \ddots & \vdots\\
+        1      & \dots  & 1 \\
+      \end{bmatrix}$$
+    \end{definition}
+    
+    The matrix is called $P$ in the article because $P^2 = P$, so it is a projection matrix.
+    While this is true, it can more intuitively thought of in a different way.
+    Consider the effect of applying $P$ to some state $\psiket = \langle x_1, x_2, \dots, x_n \rangle$.
+    We have:
+    \begin{align*}
+      &P\left(\colvector{x_1, x_2, \dots, x_n}\right) \\
+      =& \frac{1}{n}
+      \begin{bmatrix}
+        1      & \dots  & 1 \\
+        \vdots & \ddots & \vdots\\
+        1      & \dots  & 1 \\
+      \end{bmatrix}
+      \colvector{x_1, x_2, \dots, x_n} \\
+      =& \frac{1}{n}(x_1 + x_2 + \dots + x_n)
+    \end{align*}
+    which is just the mean of the components of $\psiket$!
+    So in some sense, $P$ can be thought of as the ``average value'' operator.
+    
+    But what is $-I + 2P$?
+    The article describes it as ``inversion about the mean''.
+    This is more clear when written differently:
+    $$-I + 2P = P - (I - P)$$
+    If we consider any particular component $x_i$ of $\ket{x}$, this operator maps $x_i$ to $\xbar - (x_i - \xbar)$, where $\xbar$ is the mean of all the components.
+    $x_i - \xbar$ can be thought of as the (signed) distance of $x_i$ from the mean.
+    Thus, $x_i - (x_i - \xbar)$ ``flips'' $x_i$ to the value the same distance from the mean but on the other side.
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[keepaspectratio, width=0.7\textwidth]{resources/inversionaboutmean}
+        \caption{A visualization of the inversion about the mean operation, from the original paper.}
+        \label{fig:inversionaboutmean}
+    \end{figure}
+  \end{subsection}
+  
+  \begin{subsection}{Analysis of the Algorithm}
+    Although the paper provides a formal proof of both the algorithm's correctness as well as its time complexity, I will only give intuition here.
+    
+    \begin{subsection}{Time Complexity Analysis}
+      The easiest part of the analysis is the time complexity, a measure of how long an algorithm will run for in the worst case.
+      The algorithm has a fixed loop of $\ceil{\sqrt{2n}}$ iterations, so clearly its runtime scales like $O(\sqrt{n})$ (where $n$ is again the size of the search space $S$).
+    \end{subsection}
+    
+    \begin{subsection}{Correctness}
+      Understanding the algorithm's behavior and correctness is a bit more difficult.
+      It's useful to consider the steps of the algorithm one by one.
+      
+      At the start of the algorithm, the state is initialized to be uniform:
+      $$\psiket = \frac{1}{\sqrt{n}}\langle 1, 1, \dots, 1 \rangle$$
+      
+      After applying $U_f$, every component has been flipped to $\frac{-1}{\sqrt{n}}$ except for the single state (call it $\ket{s}$) for which $f(s) = 1$:
+      $$\psiket = \frac{1}{\sqrt{n}}\langle -1, -1\dots, 1, \dots, -1, -1 \rangle$$
+      
+      At this point, especially if $n$ is fairly large, the mean of these components is roughly $\frac{-1}{\sqrt{n}}$.
+      So applying $-I + 2P$ has no effect on any component but $\ket{s}$.
+      Meanwhile, $\ket{s}$ has amplitude $\frac{1}{\sqrt{n}}$.
+      Since the mean is $\frac{1}{\sqrt{n}}$, $\ket{s}$'s amplitude is therefore distance $\frac{2}{\sqrt{n}}$ from the mean.
+      So when it gets inverted, it gets a new amplitude $\frac{-1}{\sqrt{n}} - \frac{2}{\sqrt{n}} = \frac{-3}{\sqrt{n}}$, making the new state approximately following:
+      $$\psiket = \frac{1}{\sqrt{n}}\langle -1, -1\dots, -3, \dots, -1, -1 \rangle$$
+      (Note that this state is no longer normalized!
+      This is just a product of our approximation, though.
+      If we were to compute the new state exactly, the non-$\ket{s}$ states would also change slightly to repair the normalization.)
+      
+      Repeating the loop again, we see a similar phenomenon.
+      After applying $U_f$, every non-$\ket{s}$ component gets flipped yet again:
+      $$\psiket = \frac{1}{\sqrt{n}}\langle 1, 1\dots, -3, \dots, 1, 1 \rangle$$
+      
+      Then, similarly to before, the mean is still roughly $\frac{1}{\sqrt{n}}$.
+      So applying $-I + 2P$ flips the $\ket{s}$ state across the mean.
+      Because the mean is $\frac{1}{\sqrt{n}}$ and $\ket{s}$ has amplitude $\frac{-3}{\sqrt{n}}$, it gets mapped to $\frac{3}{\sqrt{n}} + \frac{2}{\sqrt{n}} = \frac{5}{\sqrt{n}}$:
+      $$\psiket = \frac{1}{\sqrt{n}}\langle 1, 1\dots, 5, \dots, 1, 1 \rangle$$
+      
+      It's clear that, as we continue this process, the amplitude of the basis vector $\ket{s}$ will grow by about $\frac{2}{\sqrt{n}}$ each time.
+      After repeating this a few times, we can expect its amplitude to tend towards 1.
+      Based on the growth rate, we would furthermore expect only on the order of $\sqrt{n}$ iterations to be necessary.
+      
+      Of course, this isn't exactly true due to the approximation we made.
+      In reality, the growth rate is always somewhat less than $\frac{2}{\sqrt{n}}$, and decreases with each iteration.
+      Nonetheless, the paper shows that it still takes only at most $\sqrt{2n}$ iterations to reach an amplitude of $\frac{1}{2}$.
+      
+      Now recall that the probability of measuring a given eigenvalue is related to its corresponding eigenvector's coefficient in a linear combination.
+      In our case, the measurable eigenvalues are different binary strings, and the coefficient of a state is just its amplitude in the state vector.
+      Thus, because the amplitude of the $\ket{s}$ vector grows in each iteration, so too does the probability of measuring $s$ (the string we want) in the end.
+      
+      Once the probability reaches $\frac{1}{2}$, we have a $\left|\frac{1}{2}\right|^2 = \frac{1}{4}$ chance of measuring the correct string.
+      While this probability may seem low, it's actually not a problem.
+      Since it's easy to check if the $s$ we got is correct (just plug it into $f$!) we can easily run the experiment a few times until we get the desired result.
+      With a measurement probability of $\frac{1}{4}$, we only need to run the algorithm four times in expectation before getting the result we're looking for!
+    \end{subsection}
+    
   \end{subsection}
 \end{section}

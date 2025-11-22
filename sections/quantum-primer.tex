@@ -14,6 +14,9 @@
     \end{definition}
     Any given quantum system has an associated Hilbert space in which its state vectors live, but different systems may be associated with different underlying Hilbert spaces.
   
+    NB: At this point, it should be evident that linear algebra is intrinsic to the study of quantum physics and quantum computing in particular.
+    We will continue to see this throughout.
+    Essentially everything we care about—quantum states, measurements, quantum gates, etc.—will be phrased in the language of linear algebra.
   \end{subsection}
   
   \begin{subsection}{Observables}
@@ -31,7 +34,7 @@
     However, we will later see how they are formalized mathematically.
     
     More unsettlingly, even when a system's quantum state is known, it is not generally possible to predict the exact result of a given measurement.
-    For instance, consider a particle in free space; i.e., in the absence of any gravity, electromagnetic, or other fields.
+    For instance, consider a particle in free space; i.e., in the absence of any gravitational, electromagnetic, or other fields.
     It is not difficult to compute this particle's precise quantum state.
     Nonetheless, if one measures the particle's position, it is possible for the particle to appear anywhere in the universe at all.
     This is not a question of measurement error or incomplete information.
@@ -41,7 +44,7 @@
     For instance, if one places a ball on a table, everyone can agree that the ball is, in fact, on the table.
     If nobody moves it and no forces act on it, then we expect that the ball will still be on the table next week.
     It is not the case that every time we blink, the ball magically appears in a different spot.
-    Yet this is what happens in quantum physics.
+    Yet this is what happens in quantum physics!
     
     Knowledge of the quantum state is not entirely useless, however.
     Although it is impossible to say exactly where a particle is before it is measured, the state allows us to at least derive a probability distribution of where we expect the particle to appear.
@@ -56,7 +59,10 @@
     For our purposes in quantum computing, our fundamental objects are called qubits.
     These qubits can be implemented in a variety of ways; for instance, they may be a photon, an electron, or even the state of an entire superconducting circuit.
     Regardless of their physical instantiation, however, a qubit's state always lives in a two-dimensional Hilbert space.
-    From the perspective of quantum computing, that means we can ignore their physical reality and use only their mathematical description.
+    \begin{definition}[Qubit]
+      A qubit is a quantum system whose state lives in a two-dimensional Hilbert space and which can be manipulated by a quantum computer.
+    \end{definition}
+    From the perspective of quantum computing, this abstract definition means we can ignore their physical reality and use only their mathematical description.
     
     Typically, we operate in a standard basis containing two vectors, $\colvector{1,0}$ and $\colvector{0,1}$.
     In physics notation, these are $\ket{0}$ and $\ket{1}$, respectively.
@@ -82,7 +88,8 @@
     \begin{definition}
       A linear operator $A$ is called Hermitian if it is self-adjoint; i.e. $A = A^*$.
     \end{definition}
-    \begin{fact}\label{fact:observableimplhermitian}
+    \begin{fact}
+      \label{fact:observableimplhermitian}
       For every observable quantity $O$, there exists a unique associated Hermitian operator $\Ohat$.
     \end{fact}
     
@@ -102,7 +109,7 @@
     \begin{fact}
       If $\ket{\psi} \in \H$ is the state of some quantum system in its Hilbert space $\H$, $O$ is some observable, and $\hat{O} \in \L(\H)$ is the Hermitian operator associated with $O$, then:
       $$\Ohat \psiket = \lambda\psiket \text{ for some }\lambda \in \R \iff \psiket\text{ has a definite value of }O$$
-      Furthermore, if this happens, the eigenvalue $\lambda$ is the result of the measurement.
+      Furthermore, if this happens, the eigenvalue $\lambda$ will always be the result of measuring $O$ on $\psiket$.
     \end{fact}
     
     Continuing with our photon example above, we know that a photon in state $\psiket$ has energy $\hbar \omega$.
@@ -115,8 +122,8 @@
     This is certainly what we expect.
     It would be a confusing world if particles could have a momentum of $2 + i$, for instance!
     
-    At this point, one may wonder: what happens if we make a measurement of $O$ on a state $\psiket$ that is \emph{not} an eigenvalue?
-    We know that these non-eigenvalue states do not have a definite value of $O$.
+    At this point, one may wonder: what happens if we make a measurement of $O$ on a state $\psiket$ that is \emph{not} an eigenvector?
+    We know that these non-eigenvector states do not have a definite value of $O$.
     This means that the result of the measurement is unpredictable, and can take on a number of possible values.
     But which values, exactly?
     
@@ -180,26 +187,31 @@
     In particular, given a set $\{\H_1, \H_2, \dots, \H_n\}$ of Hilbert spaces each corresponding to a qubit's state, the whole system of all $n$ qubits can be described by a state vector in $\H_1 \otimes \H_2 \otimes \dots \otimes \H_n$ (here $\otimes$ is the tensor product).
     
     We will typically denote the state of a system with $n$ qubits in one of two ways.
-    The eigenstates will be denoted as $\ket{\psi_1\psi_2\dots\psi_n}$, where each of $\psi_i \in \{0, 1\}$.
+    The eigenstates will be denoted as $\ket{x_1 x_2 \dots x_n}$, where each of $x_i \in \{0, 1\}$.
     So for instance, the state with four qubits, each in the $\ket{0}$ state is denoted as $\ket{0000}$.
 %
     The non-eigenstates will typically be denoted as a $2^n$-dimensional vector, where the first entry is the coefficient of the $\ket{0\dots0}$ state, the second entry is the coefficient of the $\ket{0\dots1}$ state, etc.
     So for instance, the following state of two qubits:
     \begin{align*}
-    \psiket &= \frac{1}{2}(\ket{0} \otimes \ket{0}) + \frac{1}{\sqrt{2}}(\ket{0} \otimes \ket{1}) + \frac{1}{2}(\ket{1} \otimes \ket{1})\\
-    &= \frac{1}{2}\ket{00} + \frac{1}{\sqrt{2}}\ket{01} + \frac{1}{2}\ket{11}
+      \psiket &= \frac{1}{2}(\ket{0} \otimes \ket{0}) + \frac{1}{\sqrt{2}}(\ket{0} \otimes \ket{1}) + \frac{1}{2}(\ket{1} \otimes \ket{1})\\
+      &= \frac{1}{2}\ket{00} + \frac{1}{\sqrt{2}}\ket{01} + \frac{1}{2}\ket{11}
     \end{align*}
     would be denoted as:
     $$\psiket = \left\langle \frac{1}{2}, 0, \frac{1}{\sqrt{2}}, \frac{1}{2} \right\rangle$$
+    
+    Sometimes we may also use a variation of the first notation, $\ket{x}$.
+    Here, $x$ is a binary string or an integer (represented in binary).
+    This can be interpreted just like the first notation, where each integer represents a particular basis state.
+    For instance, if $x = 3$, we would have $\ket{x} = \ket{101} = \frac{1}{\sqrt{2}}\langle1, 0, 1\rangle$
   \end{subsection}
   
   \begin{subsection}{Quantum Gates}
     Finally, before we can see the algorithm, we must define quantum gates.
     
-    Classical computers are built from different gates—AND, OR, NOT, etc.—which each operate on the $0$s and $1$s stored in the CPU's registers.
+    Classical computers are built from different gates—\textsc{AND}, OR, NOT, etc.—which each operate on the $0$s and $1$s stored in the CPU's registers.
     Quantum computers are conceptually no different.
     
-    \begin{definition}{Quantum gate}
+    \begin{definition}[Quantum gate]
       A quantum gate is a unitary operator $U \in \L(\H)$ (not necessarily Hermitian nor related to a measurement!), where $\H$ is the Hilbert space of a system of several qubits.
     \end{definition}
     

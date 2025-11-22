@@ -12,6 +12,7 @@
 \usepackage{braket}
 \usepackage{mathtools}
 \usepackage{algpseudocode}
+\usepackage{float}
 \usepgflibrary{shapes}
 \usetikzlibrary{arrows,automata,backgrounds}
 
@@ -56,6 +57,7 @@
 \newcommand\limit[2]{\lim\limits_{#1 \to #2}}
 \newcommand\maybeeq{\stackrel{?}{=}}
 \newcommand{\iprod}[2]{\langle #1, #2 \rangle}
+\newcommand{\xbar}{\bar{x}}
 \ExplSyntaxOn
 \NewDocumentCommand{\colvector}{m}
 {
@@ -64,6 +66,8 @@
   \end{bmatrix}
 }
 \ExplSyntaxOff
+
+\SetKwFor{RepTimes}{repeat}{times}{end}
 
 %environment definitions
 
