@@ -81,6 +81,10 @@
     \begin{definition}
       A linear operator $A$ is called Hermitian if it is self-adjoint; i.e. $A = A^*$.
     \end{definition}
+    \begin{fact}\label{fact:observableimplhermitian}
+      For every observable quantity $O$, there exists a unique associated Hermitian operator $\Ohat$.
+    \end{fact}
+    
     As mentioned above, most states do not have a definite value of any particular observable.
     In general, the result of a measurement is unpredictable: multiple measurements of the same state will give different, random, results.
     However, there are certain special states that \emph{do} have definite values of an observable.
@@ -151,25 +155,21 @@
       Suppose $\psiket$, $\ket{\psi_i}$, and $\lambda_i$ are defined as above.
       Then a measurement of $O$ on $\psiket$ will give $\lambda_i$ with probability $|\braket{\psi_i|\psi}|^2$, where $\braket{\psi_i|\psi}$ is physics notation for the inner product $\iprod{\ket{\psi}}{\ket{\psi_i}}$
     \end{corollary}
-  \end{subsection}
-  
-  \begin{subsection}{Multi-Qubit Systems}
-    \label{subsec:multi-qubit-systems}
-    In any useful quantum algorithm, we will want to have more than one qubit.
-    Conveniently, a collection of qubits can be thought of as a new composite quantum system with its own quantum state space.
-    In particular, given a set $\{\H_1, \H_2, \dots, \H_n\}$ of Hilbert spaces each corresponding to a qubit's state, the whole system of all $n$ qubits can be described by a state vector in $\H_1 \otimes \H_2 \otimes \dots \otimes \H_n$ (here $\otimes$ is the tensor product).
     
-    A system of multiple qubits can be in either an ``entangled'' or an ``unentangled'' state.
-    \begin{definition}[Unentangled state]
-      A quantum state $\psiket \in \H_1 \otimes \H_2 \otimes \dots \otimes \H_n$ is said to be unentangled if
-      $$\psiket = \ket{\psi_1} \otimes \ket{\psi_2} \otimes \dots \ket{\psi_n}$$
-      for some states $\ket{\psi_i} \in \H_i$
-    \end{definition}
-    In an unentangled state, one can reasonably say that the $i$th qubit is in state $\ket{\psi_i}$ for all $i$.
-    However, the state of the system can be more complex.
-    Consider a system of two qubits with the following state:
-    $$\frac{1}{\sqrt{2}}(\ket{0} \otimes \ket{1}) + \frac{1}{\sqrt{2}}(\ket{1} \otimes \ket{0})$$
-    (Notice the factors of $\frac{1}{\sqrt{2}}$, since quantum states must be unit vectors).
-  
+    There's just one last fact we'll need before we can see the algorithm, essentially the converse of $\ref{fact:observableimplhermitian}$:
+    \begin{fact}
+      For any Hermitian operator $\Ohat$, there exists an observable quantity whose possible values are exactly the eigenvalues of $\Ohat$.
+    \end{fact}
+    This is important to ensure that qubit states are measurable.
+    Consider the operator defined by the matrix
+    $$\begin{bmatrix}
+        1 & 0 \\
+        0 & -1 \\
+    \end{bmatrix}$$
+    in the $\{\ket{0}, \ket{1}\}$ basis.
+    Because this an operator diagonal with respect to an orthonormal basis and with real eigenvalues, it is Hermitian.
+    This implies we can always physically measure the state of a qubit by carrying out the measurement associated with this operator.
+    Our measurement will give $1$ or $-1$, allowing us to ``read the value'' of the qubit.
+    
   \end{subsection}
 \end{section}

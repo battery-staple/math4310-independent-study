@@ -1,7 +1,6 @@
 \begin{section}{Grover's Algorithm}
-  With the quantum background out of the way, Grover's algorithm is actually relatively simple.
-  It solves a very general problem called database search.
-  
+  Before we can tackle the algorithm given in the paper—now called Grover's algorithm, after the author—we must define formally the problem it sets out to solve.
+  That problem is called Database Search.
   \begin{subsection}{Database Search}
     \begin{definition}[Database Search]
       Given a set $S$, an element $s \in S$, and an efficiently computable function $f: S \to \{0, 1\}$ for which
@@ -18,8 +17,10 @@
     
     Alternatively, the setting could be more abstract.
     Suppose we have any injective function $g: X -> Y$ with finite codomain, as well as some element $y \in Y$ for which we are trying to find the preimage.
-    This is essentially an instance of database search for which $S = Y$ and $f(x) = \begin{cases*}
-                                                                                       1 \text{ if }g(x) = y \\ 0 \text{ otherwise}
+    This is essentially an instance of database search for which $S = Y$ and
+    $f(x) =
+    \begin{cases*}
+      1 \text{ if }g(x) = y \\ 0 \text{ otherwise}
     \end{cases*}$.
     
     Many hard problems in computer science (for instance, the discrete log problem~\ref{def:discretelog}) can be reduced to finding the inverses of functions.
@@ -42,11 +43,12 @@
       }
     \end{algorithm}
     
-    
     This algorithm in the worst case takes up to $n$ iterations before finding $s$.
     If $s$ happens to be the last element, it will have to iterate through the entire set before finding it.
     Without any additional information, this is the best we can do on a classical computer.
     
-    
+    Intuitively, this should make sense.
+    Because we know nothing about $S$ or $f$ or $s$, we have no way of determining where $s$ is in the set, so we have to check every element.
+    Yet shockingly, this is not true for quantum computers.
   \end{subsection}
 \end{section}
